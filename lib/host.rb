@@ -502,7 +502,7 @@ module BushSlicer
         exec("touch '#{file}'", opts)
       end
     end
-
+    
     # @return false on unsuccessful deletion
     def delete(file, opts={})
       if opts[:r] || opts[:recursive]
@@ -522,20 +522,16 @@ module BushSlicer
         # relies strongly on bad_files checking above
         file = '~/' + file
       end
-      if opts[:raw]
-        exec_method = :exec_raw
-      elsif opts[:admin]
-        exec_method = :exec_admin
+      if File.file? file
+        rm_cmd = FileUtils.rm(file, force: true)
+        check_cmd = File.file? file
       else
-        exec_method = :exec
+        rm_cmd  = FileUtils.remove_dir(file, force: true)
+        check_cmd = File.directory? file
       end
-      public_send(exec_method, "rm #{r} -f -- #{file}", opts)
-      opts[:quiet] = true
-      res = public_send(exec_method, "ls -d -- #{file}", opts)
+      rm_cmd
+      return !check_cmd
 
-      # OCDebugAccessibleHost does not return exit status of executed command
-      # return ! res[:success]
-      return res[:response].include? "No such"
     end
 
     # wait until one file in the list is found and returns its name
