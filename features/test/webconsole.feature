@@ -60,3 +60,12 @@ Feature: console test
     Then the step should succeed
     When I run the :subscribe_using_default_params web action
     Then the step should succeed
+
+
+  @admin
+  Scenario: test safari
+    Given I have a project
+    Given I open admin console in a browser
+    When I perform the :goto_routes_page web action with:
+      | project_name | <%= project.name %> |
+    Then the step should succeed
