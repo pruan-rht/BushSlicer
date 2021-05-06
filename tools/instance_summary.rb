@@ -494,7 +494,14 @@ module BushSlicer
           inst_summary[:name]= inst.name
           inst_summary[:uptime]= gce.instance_uptime inst
           inst_summary[:type] = inst.machine_type.split('/').last
-          inst_summary[:cost] = (inst_summary[:uptime] * @gce_prices[inst_summary[:type]]).round(2)
+          inst_hourly_price = @gce_prices[inst_summary[:type]]
+          cost = 0.0
+          if inst_hourly_price.nil?
+            inst_hourly_price = 0.0
+            puts "##### WARNING, setting hourly price for '#{inst_summary[:type]}' to 0.0 because it's not known"
+          end
+          cost = inst_summary[:uptime] * inst_hourly_price
+          inst_summary[:cost] = cost.round(2)
           inst_summary[:owned] = inst.name
           if inst_summary[:owned]
             inst_summary[:flexy_job_id], inst_summary[:inst_prefix] = jenkins.get_jenkins_flexy_job_id(inst_summary[:owned])
