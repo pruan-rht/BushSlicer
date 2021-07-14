@@ -19,8 +19,8 @@
 %>
 
 default: --publish-quiet --profile devel
-debug: --profile _debug --profile devel
-devel: --profile _devel <%= default_args %>
+debug: --profile _debug --publish-quiet --profile devel
+devel: --publish-quiet --profile _devel <%= default_args %>
 tcms: BUSHSLICER_TEST_CASE_MANAGER=tcms <%= tcms_args %>
 polarshift: BUSHSLICER_TEST_CASE_MANAGER=polarshift <%= tcms_args %>
 junit: <%= default_args %> -f junit -o "<%= File.join(report_dir, 'junit-report') %>" --profile dir_embedder
